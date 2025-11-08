@@ -3,32 +3,46 @@ import { Keyboard } from "../../core/abstract/keyboard.js";
 
 export class TerminalKeyboard extends Keyboard {
   terminal: Terminal
+  private pendingKeys: Set<number> = new Set()
 
   constructor(terminal: Terminal) {
     super();
 
     this.terminal = terminal;
     this.terminal.grabInput(true);
+
     this.terminal.on("key", (name: string) => {
       if (name === "CTRL_C" || name === "ESCAPE") {
-        this.terminal.grabInput(false);
-        this.terminal.hideCursor(false);
+        this.cleanup();
         this.terminal.processExit(0);
       }
+
       if (name in this.keyMap) {
-        this.pressedKeys[this.keyMap[name]] = true;
+        const chipKey = this.keyMap[name];
+
+        this.pendingKeys.add(chipKey);
+        this.pressedKeys[chipKey] = true;
+
         if (this.waiting) {
-          this.waitingKey = this.keyMap[name];
+          this.waitingKey = chipKey;
           this.waiting = false;
-          this.pressedKeys[this.keyMap[name]] = false;
         }
       }
+    });
 
-    })
-
+    // Clear keys after each emulator frame
     setInterval(() => {
-      for (let key in this.pressedKeys)
-        this.pressedKeys[key] = false;
-    }, 50);
+      for (let i = 0; i < 16; i++) {
+        if (!this.pendingKeys.has(i)) {
+          this.pressedKeys[i] = false;
+        }
+      }
+      this.pendingKeys.clear();
+    }, 1000 / 60);
+  }
+
+  private cleanup() {
+    this.terminal.grabInput(false);
+    this.terminal.hideCursor(false);
   }
 }

@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "typecheck": "tsc -b tsconfig.app.json",
-    "build:terminal": "tsc -b tsconfig.terminal.json",
     "preview": "vite preview",
     "test": "jest",
-    "test-coverage": "jest --coverage",
-    "start:terminal": "node ./scripts/terminal.js"
+    "test:coverage": "jest --coverage",
+    "terminal": "npm run terminal:build && npm run terminal:run",
+    "terminal:build": "tsc -b tsconfig.terminal.json",
+    "terminal:run": "node ./scripts/terminal.js",
+    "clean": "rimraf dist dist-terminal *.tsbuildinfo"
   },
   "author": "Jacob Knowlton",
   "license": "ISC",
