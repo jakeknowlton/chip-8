@@ -1,6 +1,6 @@
 import terminalKit, { ScreenBuffer, Terminal } from "terminal-kit";
 
-import { Display } from "../abstract/display.js"
+import { Display } from "../../core/abstract/display.js"
 
 export class TerminalDisplay extends Display {
   lowResChars = [' ', '█']

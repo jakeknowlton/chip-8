@@ -1,13 +1,13 @@
-import type { RunnableEmulator } from "./interfaces/runnableEmulator.js";
+import type { RunnableEmulator } from "../../core/interfaces/runnableEmulator.js";
 import terminalKit from "terminal-kit";
 
-import { Emulator } from "./emulator.js";
-import { IntervalTimer } from "./timeoutTimer.js";
-import { TerminalKeyboard } from "./node/terminalKeyboard.js";
-import { TerminalDisplay } from "./node/terminalDisplay.js";
-import { SilentSound } from "./node/silentSound.js";
-import { NodeLogger } from "./node/nodeLogger.js";
-import { LogLevel } from "./abstract/logger.js";
+import { Emulator } from "../../core/emulator.js";
+import { IntervalTimer } from "../../utils/timeoutTimer.js";
+import { TerminalKeyboard } from "./terminalKeyboard.js";
+import { TerminalDisplay } from "./terminalDisplay.js";
+import { SilentSound } from "./silentSound.js";
+import { NodeLogger } from "./nodeLogger.js";
+import { LogLevel } from "../../core/abstract/logger.js";
 
 export class TerminalEmulator implements RunnableEmulator {
   emulator: Emulator;

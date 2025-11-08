@@ -1,4 +1,4 @@
-import type { Sound } from "../interfaces/sound";
+import type { Sound } from "../../core/interfaces/sound";
 
 class SampleBuffer {
   private pointer = 0;

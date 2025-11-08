@@ -1,4 +1,4 @@
-import type { Timer } from "./interfaces/timer.js"
+import type { Timer } from "../core/interfaces/timer.js"
 
 export class IntervalTimer implements Timer {
   static readonly FRAMES_PER_SECOND = 60;

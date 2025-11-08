@@ -23,6 +23,10 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["node"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["tests", "src/main.tsx", "src/App.tsx", "src/web"]
+  "include": [
+    "src/core/**/*",
+    "src/platforms/terminal/**/*",
+    "src/utils/**/*"
+  ],
+  "exclude": ["tests"]
 }

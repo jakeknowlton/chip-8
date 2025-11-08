@@ -1,4 +1,4 @@
-import type { Sound } from "../interfaces/sound";
+import type { Sound } from "../../core/interfaces/sound";
 
 const processorCode = `
   class SampleBufferProcessor extends AudioWorkletProcessor {

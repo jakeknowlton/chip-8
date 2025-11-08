@@ -1,5 +1,5 @@
 import { Terminal } from "terminal-kit";
-import { Keyboard } from "../abstract/keyboard.js";
+import { Keyboard } from "../../core/abstract/keyboard.js";
 
 export class TerminalKeyboard extends Keyboard {
   terminal: Terminal

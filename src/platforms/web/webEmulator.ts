@@ -1,12 +1,12 @@
-import type { RunnableEmulator } from "./interfaces/runnableEmulator";
+import type { RunnableEmulator } from "../../core/interfaces/runnableEmulator";
 
-import { Emulator } from "./emulator";
-import { IntervalTimer } from "./timeoutTimer";
-import { BrowserKeyboard } from "./web/browserKeyboard";
-import { AudioWorkletSound } from "./web/audioWorkletSound";
-import { CanvasDisplay } from "./web/canvasDisplay";
-import { WebLogger } from "./web/webLogger";
-import { LogLevel } from "./abstract/logger";
+import { Emulator } from "../../core/emulator";
+import { IntervalTimer } from "../../utils/timeoutTimer";
+import { BrowserKeyboard } from "./browserKeyboard";
+import { AudioWorkletSound } from "./audioWorkletSound";
+import { CanvasDisplay } from "./canvasDisplay";
+import { WebLogger } from "./webLogger";
+import { LogLevel } from "../../core/abstract/logger";
 
 export class WebEmulator implements RunnableEmulator {
   emulator: Emulator;
