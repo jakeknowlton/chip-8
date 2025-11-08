@@ -1,4 +1,4 @@
-import { Logger, LogLevel } from '../abstract/logger';
+import { Logger, LogLevel } from '../../core/abstract/logger';
 
 export class WebLogger extends Logger {
   constructor(level: LogLevel = LogLevel.INFO, logToConsole: boolean = true) {

@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "es2022",
+    "lib": ["ES2022"],
+    "module": "es6",
+    "rootDir": "./src",
+    "outDir": "./dist-terminal",
+    "removeComments": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": ["node"]
+  },
+  "include": [
+    "src/core/**/*",
+    "src/platforms/terminal/**/*",
+    "src/utils/**/*"
+  ],
+  "exclude": ["tests"]
+}

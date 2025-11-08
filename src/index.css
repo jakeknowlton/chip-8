@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #27272a; /* zinc-800 */
+  color: rgba(255, 255, 255, 0.9);
+}
+
+#root {
+  width: 100%;
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #ffffff;
+    color: #1e293b; /* slate-800 */
+  }
+}

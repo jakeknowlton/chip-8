@@ -1,66 +1,45 @@
-import { Sound } from "../interfaces/sound";
-
-const processorCode = `
-  class SampleBufferProcessor extends AudioWorkletProcessor {
-    constructor() {
-      super();
-      this.audioData = [];
-      this.port.onmessage = this.handleMessage.bind(this);
-      this.pointer = 0;
-    }
-
-    handleMessage(event) {
-      if (event.data.command === 'enqueue') {
-        this.audioData.push(event.data.audioBuffer);
-      } else if (event.data.command === 'reset') {
-        this.audioData = [];
-      }
-    }
-
-    process(inputs, outputs, parameters) {
-      const output = outputs[0];
-      const outData = output[0];
-      let index = 0;
-      while (this.audioData.length && index < outData.length) {
-        const audioBuffer = this.audioData[0];
-        const size = Math.min(outData.length - index, audioBuffer.length - this.pointer);
-        for (let i = 0; i < size; i++) {
-          outData[index++] = audioBuffer[this.pointer++];
-        }
-        if (this.pointer >= audioBuffer.length) {
-          this.audioData.shift();
-          this.pointer = 0;
-        }
-      }
-      while (index < outData.length) {
-        outData[index++] = 0;
-      }
-      return true;
-    }
-  }
-
-  registerProcessor('sample-buffer-processor', SampleBufferProcessor);
-`;
-
-const dataURL = `data:application/javascript;base64,${btoa(processorCode)}`;
+import type { Sound } from "../../core/interfaces/sound";
 
 class SampleBuffer {
-  pointer = 0;
-  buffer: Float32Array;
-  duration: number;
+  private pointer = 0;
+  private buffer: Float32Array;
+  private duration: number;
 
   constructor(buffer: Float32Array, duration: number) {
     this.buffer = buffer;
     this.duration = duration;
   }
+
+  write(buffer: Float32Array, index: number, size: number) {
+    size = Math.min(Math.max(size, 0), this.duration);
+    if (!size) return size;
+
+    this.duration -= size;
+    const end = index + size;
+
+    for (let i = index; i < end; i++) {
+      buffer[i] = this.buffer[this.pointer++];
+      this.pointer %= this.buffer.length;
+    }
+
+    return size;
+  }
+
+  dequeue(duration: number) {
+    this.duration -= duration;
+  }
+
+  getDuration(): number {
+    return this.duration;
+  }
 }
 
-export class AudioWorkletSound implements Sound {
+export class BrowserSound implements Sound {
   static readonly BASE_FREQUENCY = 4000;
   static readonly PITCH_BIAS = 64;
 
   private audioContext: AudioContext;
-  private audioNode: AudioWorkletNode | undefined;
+  private audioNode: ScriptProcessorNode;
   private gainNode: GainNode;
   private audioData: SampleBuffer[] = [];
 
@@ -68,7 +47,7 @@ export class AudioWorkletSound implements Sound {
 
   static readonly ALPHA_CUTOFF_FREQUENCY = 18000;
   static readonly LOW_PASS_FILTER_STEPS = 4;
-  private lowPassBuffer = new Array<number>(AudioWorkletSound.LOW_PASS_FILTER_STEPS + 1).fill(0);
+  private lowPassBuffer = new Array<number>(BrowserSound.LOW_PASS_FILTER_STEPS + 1).fill(0);
 
   private pitch: number;
   private state: { pos: number }
@@ -86,49 +65,61 @@ export class AudioWorkletSound implements Sound {
 
     this.oscillator = null;
 
-    this.pitch = AudioWorkletSound.PITCH_BIAS;
+    this.pitch = BrowserSound.PITCH_BIAS;
     this.state = { pos: 0 };
     this.buffer = new Uint8Array();
     this.timer = 0;
     this.resetFlag = false;
 
     this.audioContext = new AudioContext();
+    const bufferSize =
+      this.audioContext.sampleRate < 64000 ? 2048 :
+        this.audioContext.sampleRate < 128000 ? 4096 : 8192;
+    this.audioNode = this.audioContext.createScriptProcessor(bufferSize, 1, 1);
     this.gainNode = this.audioContext.createGain();
     this.gainNode.gain.value = volume;
+    this.audioNode.onaudioprocess = this.process.bind(this);
 
-    this.initAudioWorklet().then(() => {
-      this.reset();
-      window.addEventListener("click", this.enable.bind(this));
-    });
-  }
+    this.reset();
 
-  private async initAudioWorklet() {
-    await this.audioContext.audioWorklet.addModule(dataURL);
-    this.audioNode = new AudioWorkletNode(this.audioContext, 'sample-buffer-processor');
-    this.audioNode.port.onmessage = this.handleWorkletMessage.bind(this);
-    this.audioNode.connect(this.gainNode);
-    this.gainNode.connect(this.audioContext.destination);
-  }
-
-  private handleWorkletMessage(event: MessageEvent) {
-    // Handle messages from AudioWorkletProcessor if needed
-    console.log("Worklet:", event);
+    // TODO: Adjust event listener to be more robust
+    window.addEventListener("click", this.enable.bind(this));
   }
 
   reset() {
     this.enableXO = false;
-    this.pitch = AudioWorkletSound.PITCH_BIAS;
+    this.pitch = BrowserSound.PITCH_BIAS;
     this.state = { pos: 0 };
     this.buffer = new Uint8Array();
     this.timer = 0;
     this.resetFlag = false;
     this.audioData = [];
-    if (this.audioNode) {
-      this.audioNode.port.postMessage({ command: 'reset' });
+    this.audioNode.connect(this.gainNode);
+    this.gainNode.connect(this.audioContext.destination)
+  }
+
+  private process(audioProcessingEvent: AudioProcessingEvent) {
+    const out = audioProcessingEvent.outputBuffer;
+    const outData = out.getChannelData(0);
+    let index = 0;
+    while (this.audioData.length && index < out.length) {
+      const size = out.length - index;
+      const written = this.audioData[0].write(outData, index, size);
+      index += written;
+      if (written < size)
+        this.audioData.shift();
+    }
+    while (index < out.length)
+      outData[index++] = 0;
+    if (this.audioData.length > 1) {
+      let audioDataSize = 0;
+      this.audioData.forEach(buffer => audioDataSize += buffer.getDuration());
+      while (audioDataSize > this.audioNode.bufferSize && this.audioData.length > 1)
+        audioDataSize -= this.audioData.shift()!.getDuration();
     }
   }
 
-  private playPattern(soundLength: number, buffer: Uint8Array, pitch = AudioWorkletSound.PITCH_BIAS, sampleState = { pos: 0 }) {
+  private playPattern(soundLength: number, buffer: Uint8Array, pitch = BrowserSound.PITCH_BIAS, sampleState = { pos: 0 }) {
     this.enable();
 
     const frequency = this.frequencyFromPitch(pitch);
@@ -153,9 +144,6 @@ export class AudioWorkletSound implements Sound {
       audioBuffer[i] = value;
     }
     this.audioData.push(new SampleBuffer(audioBuffer, samples));
-    if (this.audioNode) {
-      this.audioNode.port.postMessage({ command: 'enqueue', audioBuffer });
-    }
     return { pos };
   }
 
@@ -170,7 +158,7 @@ export class AudioWorkletSound implements Sound {
   }
 
   private getLowPassAlpha(samplingFrequency: number): number {
-    const c = Math.cos(2 * Math.PI * AudioWorkletSound.ALPHA_CUTOFF_FREQUENCY / samplingFrequency);
+    const c = Math.cos(2 * Math.PI * BrowserSound.ALPHA_CUTOFF_FREQUENCY / samplingFrequency);
     return c - 1 + Math.sqrt(c * c - 4 * c + 3);
   }
 
@@ -189,9 +177,7 @@ export class AudioWorkletSound implements Sound {
   }
 
   stop(): void {
-    if (this.audioNode) {
-      this.audioNode.disconnect();
-    }
+    this.audioNode.disconnect();
     this.audioData = [];
     if (this.oscillator) {
       this.oscillator.stop();
@@ -238,7 +224,7 @@ export class AudioWorkletSound implements Sound {
   }
 
   private frequencyFromPitch(pitch: number): number {
-    return AudioWorkletSound.BASE_FREQUENCY * 2 ** ((pitch - AudioWorkletSound.PITCH_BIAS) / 48);
+    return BrowserSound.BASE_FREQUENCY * 2 ** ((pitch - BrowserSound.PITCH_BIAS) / 48)
   }
 
   setPitch(pitch: number): void {

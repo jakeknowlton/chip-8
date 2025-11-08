@@ -1,4 +1,4 @@
-import { Keyboard } from "../abstract/keyboard";
+import { Keyboard } from "../../core/abstract/keyboard";
 
 export class BrowserKeyboard extends Keyboard {
   constructor() {

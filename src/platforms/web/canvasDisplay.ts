@@ -1,4 +1,4 @@
-import { Display } from "../abstract/display"
+import { Display } from "../../core/abstract/display"
 
 export class CanvasDisplay extends Display {
   private canvas: HTMLCanvasElement

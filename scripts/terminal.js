@@ -1,7 +1,7 @@
 import fs from 'fs';
 import readline from 'readline';
-import { TerminalEmulator } from "../dist/terminalEmulator.js";
-import { LogLevel } from '../dist/abstract/logger.js';
+import { TerminalEmulator } from "../dist-terminal/platforms/terminal/terminalEmulator.js";
+import { LogLevel } from '../dist-terminal/core/abstract/logger.js';
 
 let romPath;
 

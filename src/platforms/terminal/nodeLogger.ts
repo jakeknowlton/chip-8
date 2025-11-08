@@ -1,4 +1,4 @@
-import { Logger, LogLevel } from '../abstract/logger.js';
+import { Logger, LogLevel } from '../../core/abstract/logger.js';
 import fs from 'fs';
 
 export class NodeLogger extends Logger {
