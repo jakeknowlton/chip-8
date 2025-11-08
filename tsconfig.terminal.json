@@ -5,7 +5,7 @@
     "lib": ["ES2022"],
     "module": "es6",
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./dist-terminal",
     "removeComments": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
