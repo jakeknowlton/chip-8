@@ -2,36 +2,36 @@
   "name": "chip-8",
   "version": "1.0.0",
   "description": "This repository is a simple, lightweight Javascript Chip-8 emulator.",
-  "main": "dist/index.js",
   "type": "module",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
-    "build": "tsc --build && webpack --mode production",
-    "clean": "tsc --build --clean && rimraf --glob web/dist/*",
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc -b tsconfig.app.json",
+    "build:terminal": "tsc -b tsconfig.terminal.json",
+    "preview": "vite preview",
     "test": "jest",
     "test-coverage": "jest --coverage",
-    "start:terminal": "node ./scripts/terminal.js",
-    "start:web": "cd ./web && http-server ."
+    "start:terminal": "node ./scripts/terminal.js"
   },
   "author": "Jacob Knowlton",
   "license": "ISC",
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "@types/terminal-kit": "^2.5.6",
+    "terminal-kit": "^3.1.1"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@webpack-cli/generators": "^3.0.7",
-    "http-server": "^14.1.1",
+    "@types/node": "^24.6.0",
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.4",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "rimraf": "^5.0.7",
     "ts-jest": "^29.1.5",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.5.2",
-    "webpack": "^5.92.1",
-    "webpack-cli": "^5.1.4"
-  },
-  "dependencies": {
-    "@types/terminal-kit": "^2.5.6",
-    "terminal-kit": "^3.1.1"
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7"
   }
 }

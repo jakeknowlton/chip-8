@@ -1,4 +1,4 @@
-import { Timer } from "./interfaces/timer.js"
+import type { Timer } from "./interfaces/timer.js"
 
 export class IntervalTimer implements Timer {
   static readonly FRAMES_PER_SECOND = 60;
@@ -14,7 +14,7 @@ export class IntervalTimer implements Timer {
   private startTime: number = 0;
   private lastTime: number = 0;
 
-  private intervalId: NodeJS.Timeout | number | null = null;
+  private intervalId: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     this.loop = this.loop.bind(this);

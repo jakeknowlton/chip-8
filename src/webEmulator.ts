@@ -1,4 +1,4 @@
-import { RunnableEmulator } from "./interfaces/runnableEmulator";
+import type { RunnableEmulator } from "./interfaces/runnableEmulator";
 
 import { Emulator } from "./emulator";
 import { IntervalTimer } from "./timeoutTimer";

@@ -1,4 +1,4 @@
-import { RunnableEmulator } from "./interfaces/runnableEmulator.js";
+import type { RunnableEmulator } from "./interfaces/runnableEmulator.js";
 import terminalKit from "terminal-kit";
 
 import { Emulator } from "./emulator.js";
