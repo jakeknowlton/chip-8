@@ -2,6 +2,10 @@
 
 A CHIP-8 emulator written in TypeScript with support for SUPER-CHIP and XO-CHIP extensions. Run classic CHIP-8 programs in your browser or terminal.
 
+## Try it Online
+
+**[chip-8.jkn.dev](https://chip-8.jkn.dev)**
+
 ## Quick Start
 
 ```bash
