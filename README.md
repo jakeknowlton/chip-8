@@ -75,17 +75,11 @@ npm run clean           # Clean build artifacts
 The original CHIP-8 interpreter specification:
 - [Cowgod's CHIP-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM)
 
-**Notes:**
-- _[Add your notes about CHIP-8 implementation here]_
-
 ### SUPER-CHIP
 SUPER-CHIP 1.0/1.1 extensions (1991):
 - High-resolution mode (128×64)
 - Scrolling instructions
 - 16×16 sprite support
-
-**Notes:**
-- _[Add your notes about SUPER-CHIP implementation here]_
 
 ### XO-CHIP
 Modern XO-CHIP extensions (2014):
@@ -94,9 +88,6 @@ Modern XO-CHIP extensions (2014):
 - Dual display planes
 - Audio pattern playback
 - 16-bit addressing
-
-**Notes:**
-- _[Add your notes about XO-CHIP implementation here]_
 
 ## Architecture
 
@@ -111,8 +102,6 @@ src/
 ├── components/        # React UI components
 └── hooks/            # Custom React hooks
 ```
-
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed documentation.
 
 ## License
 
