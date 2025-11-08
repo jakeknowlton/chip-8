@@ -5,7 +5,6 @@ import { ROMLoader } from '../ROMLoader/ROMLoader'
 import { EmulatorControls } from '../EmulatorControls/EmulatorControls'
 import { SettingsPanel } from '../SettingsPanel/SettingsPanel'
 import { useROMLoader } from '../../hooks/useROMLoader'
-import './EmulatorCanvas.css'
 
 interface EmulatorCanvasProps {
   width?: number
@@ -27,14 +26,15 @@ export function EmulatorCanvas({ width = 512, height = 256 }: EmulatorCanvasProp
   })
 
   return (
-    <div className="emulator-container">
+    <div className="flex flex-col gap-6 items-center">
       <ROMLoader onFileChange={handleFileUpload} fileName={fileName} />
 
       <canvas
         ref={canvasRef}
         width={width}
         height={height}
-        className="emulator-canvas"
+        className="border-2 border-indigo-500 bg-black"
+        style={{ imageRendering: 'pixelated' }}
       />
 
       <EmulatorControls

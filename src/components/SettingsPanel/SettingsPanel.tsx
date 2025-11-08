@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import './SettingsPanel.css'
 
 interface SettingsPanelProps {
   onSpeedChange: (speed: number) => void
@@ -41,9 +40,9 @@ export function SettingsPanel({
   }
 
   return (
-    <div className="settings-panel">
-      <div className="setting">
-        <label htmlFor="speed">Emulation speed: {speed}</label>
+    <div className="flex flex-col gap-4 w-full max-w-md">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="speed" className="font-medium">Emulation speed: {speed}</label>
         <input
           type="range"
           min="5"
@@ -52,11 +51,12 @@ export function SettingsPanel({
           step="5"
           id="speed"
           onChange={handleSpeedChange}
+          className="w-full"
         />
       </div>
 
-      <div className="setting">
-        <label htmlFor="frequency">Sound frequency: {frequency} Hz</label>
+      <div className="flex flex-col gap-2">
+        <label htmlFor="frequency" className="font-medium">Sound frequency: {frequency} Hz</label>
         <input
           type="range"
           min="40"
@@ -65,11 +65,12 @@ export function SettingsPanel({
           step="20"
           id="frequency"
           onChange={handleFrequencyChange}
+          className="w-full"
         />
       </div>
 
-      <div className="setting">
-        <label htmlFor="volume">Sound volume: {volume.toFixed(2)}</label>
+      <div className="flex flex-col gap-2">
+        <label htmlFor="volume" className="font-medium">Sound volume: {volume.toFixed(2)}</label>
         <input
           type="range"
           min="0"
@@ -78,6 +79,7 @@ export function SettingsPanel({
           step="0.01"
           id="volume"
           onChange={handleVolumeChange}
+          className="w-full"
         />
       </div>
     </div>
