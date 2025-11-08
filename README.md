@@ -103,10 +103,6 @@ src/
 └── hooks/            # Custom React hooks
 ```
 
-## License
-
-ISC
-
 ## Credits
 
 - CHIP-8 specification by Joseph Weisbecker (1977)
